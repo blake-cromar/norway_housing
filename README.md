@@ -1,1 +1,0 @@
-# norway_housing
