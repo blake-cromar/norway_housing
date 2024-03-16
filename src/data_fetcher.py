@@ -10,10 +10,16 @@ class DataFetcher:
 
     Attributes:
     -----------
+    header : list
+        The header used for the dataset
     df : pandas.DataFrame
         Data frame to store housing data.
     url : str
         URL of the website to fetch data from.
+    response : requests.models.Response
+        The response from the URL
+    soup : bs4.BeautifulSoup
+        A soup object used to grab specific website data
     housing_data : list
         List to store parsed housing data.
     """
