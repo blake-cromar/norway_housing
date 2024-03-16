@@ -3,33 +3,44 @@ import requests
 import json
 import pandas as pd
 
-class DataFetcher():
+class DataFetcher:
     def __init__(self):
-        self.header = ["id", 
-          "location", 
-          "timestamp", 
-          "price_suggestion", 
-          "price_total", 
-          "house_size_sq_meters", 
-          "plot_size_sq_meters", 
-          "organization_name", 
-          "local_area_name", 
-          "number_of_bedrooms", 
-          "owner_type_description", 
-          "property_type_description", 
-          "latitude", 
-          "longitude"
-          ]
+        self.initialize_data()
 
+    def initialize_data(self):
+        self.set_header()
         self.df = pd.DataFrame(columns=self.header)
         self.url = "https://www.finn.no/realestate/homes/search.html"
-        self.response = requests.get(self.url)
-        self.soup = BeautifulSoup(self.response.text, "html.parser")
+        self.get_response()
+        self.parse_soup()
         self.housing_data = None
-    
+
+    def set_header(self):
+        self.header = ["id", 
+                       "location", 
+                       "timestamp", 
+                       "price_suggestion", 
+                       "price_total", 
+                       "house_size_sq_meters", 
+                       "plot_size_sq_meters", 
+                       "organization_name", 
+                       "local_area_name", 
+                       "number_of_bedrooms", 
+                       "owner_type_description", 
+                       "property_type_description", 
+                       "latitude", 
+                       "longitude"
+                      ]
+
     def fetch_data(self):
         self.pull_data()
         self.add_single_webpage_data()
+
+    def get_response(self):
+        self.response = requests.get(self.url)
+
+    def parse_soup(self):
+        self.soup = BeautifulSoup(self.response.text, "html.parser")
 
     def pull_data(self):
         pulled_json = self.soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
@@ -39,7 +50,6 @@ class DataFetcher():
 
     def add_single_webpage_data(self):
         for house_data in self.housing_data:
-            # Append the data to the DataFrame
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
@@ -63,3 +73,4 @@ class DataFetcher():
 if __name__ == "__main__":
     data_fetcher = DataFetcher()
     data_fetcher.fetch_data()
+    dataset = data_fetcher.df
