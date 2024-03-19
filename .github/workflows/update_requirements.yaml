@@ -40,8 +40,6 @@ jobs:
           git commit -m "Update requirements.txt" || (echo "No changes to commit. Exiting..." && exit 0)
 
       - name: Push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           git push
 
