@@ -35,14 +35,23 @@ jobs:
         run: |
           git diff --exit-code || (echo "No changes to commit. Exiting..." && exit 0)
 
+      - name: Get user info
+        id: user_info
+        run: |
+          user_name=$(git log -1 --pretty=format:'%an')
+          user_email=$(git log -1 --pretty=format:'%ae')
+          echo "::set-output name=user_name::$user_name"
+          echo "::set-output name=user_email::$user_email"
+
       - name: Commit changes
         run: |
-          git config --global user.name 'mr-cromar'
-          git config --global user.email 'blake.cromar@icloud.com'
+          git config --global user.name "${{ steps.user_info.outputs.user_name }}"
+          git config --global user.email "${{ steps.user_info.outputs.user_email }}"
           git add requirements.txt
           git commit -m "Update requirements.txt" || (echo "No changes to commit. Exiting..." && exit 0)
 
       - name: Push changes
         run: |
           git push
+
 
