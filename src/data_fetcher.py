@@ -28,11 +28,11 @@ class DataFetcher:
         """
         Initializes the DataFetcher object and sets up initial data.
         """
-        self.initialize_data()
+        self.initialize_attributes()
 
-    def initialize_data(self):
+    def initialize_attributes(self):
         """
-        Initializes data attributes.
+        Initializes the attributes.
         """
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
