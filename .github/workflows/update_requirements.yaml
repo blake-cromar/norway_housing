@@ -28,10 +28,17 @@ jobs:
         run: |
           pip freeze > requirements.txt
 
+      - name: Check for changes
+        run: |
+          git diff --exit-code || (echo "No changes to commit. Exiting..." && exit 0)
+
       - name: Commit changes
         run: |
           git config --global user.name 'mr-cromar'
           git config --global user.email 'blake.cromar@icloud.com'
           git add requirements.txt
-          git commit -m "Update requirements.txt" || true
+          git commit -m "Update requirements.txt" || (echo "No changes to commit. Exiting..." && exit 0)
+
+      - name: Push changes
+        run: |
           git push
