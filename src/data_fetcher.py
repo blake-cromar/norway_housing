@@ -28,12 +28,6 @@ class DataFetcher:
         """
         Initializes the DataFetcher object and sets up initial data.
         """
-        self.initialize_attributes()
-
-    def initialize_attributes(self):
-        """
-        Initializes the attributes.
-        """
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
         self.url = "https://www.finn.no/realestate/homes/search.html"
