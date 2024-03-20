@@ -37,8 +37,6 @@ class DataFetcher:
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
         self.url = "https://www.finn.no/realestate/homes/search.html"
-        self.get_response()
-        self.parse_soup()
         self.housing_data = None
 
     def set_header(self):
@@ -69,24 +67,13 @@ class DataFetcher:
         self.pull_data()
         self.add_single_webpage_data()
 
-    def get_response(self):
-        """
-        Fetches response from the URL. This method sends a GET request to the specified URL and retrieves the response.
-        """
-        self.response = requests.get(self.url)
-
-    def parse_soup(self):
-        """
-        Parses the response text using BeautifulSoup. This method extracts structured data from the HTML content 
-        retrieved from the webpage.
-        """
-        self.soup = BeautifulSoup(self.response.text, "html.parser")
-
     def pull_data(self):
         """
         Pulls JSON data from the parsed soup. This method locates and extracts JSON data embedded within the webpage and
         loads it into memory.
         """
+        self.response = requests.get(self.url)
+        self.soup = BeautifulSoup(self.response.text, "html.parser")
         pulled_json = self.soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
         json_content = pulled_json.text.strip()
         loaded_json = json.loads(json_content)
