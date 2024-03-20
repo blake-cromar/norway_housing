@@ -14,12 +14,8 @@ class DataFetcher:
         The header used for the dataset
     df : pandas.DataFrame
         Data frame to store housing data.
-    url : str
-        URL of the website to fetch data from.
-    response : requests.models.Response
-        The response from the URL
-    soup : bs4.BeautifulSoup
-        A soup object used to grab specific website data
+    main_url : str
+        The main URL of the website to fetch data from.
     housing_data : list
         List to store parsed housing data.
     """
@@ -30,7 +26,7 @@ class DataFetcher:
         """
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
-        self.url = "https://www.finn.no/realestate/homes/search.html"
+        self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
         self.housing_data = None
 
     def set_header(self):
@@ -61,14 +57,36 @@ class DataFetcher:
         self.pull_data()
         self.add_single_webpage_data()
 
+    def determine_number_of_pages(self):
+        pass
+    
+    def cook_soup(self, url):
+        """
+        Prepares a BeautifulSoup object that will be used for parsing data.
+        
+        Arguments
+        ---------
+        url : str
+            The url we are going to create a soup object with.
+            
+        Returns
+        -------
+        bs4.BeautifulSoup
+            A BeautifulSoup object used to pull information from a webpage
+        """
+        response = requests.get(url=url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        return soup
+
     def pull_data(self):
         """
         Pulls JSON data from the parsed soup. This method locates and extracts JSON data embedded within the webpage and
         loads it into memory.
         """
-        self.response = requests.get(self.url)
-        self.soup = BeautifulSoup(self.response.text, "html.parser")
-        pulled_json = self.soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
+
+        soup = self.cook_soup(url=self.main_webpage)
+        pulled_json = soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
         json_content = pulled_json.text.strip()
         loaded_json = json.loads(json_content)
         self.housing_data = loaded_json["props"]["pageProps"]["search"]["docs"]
