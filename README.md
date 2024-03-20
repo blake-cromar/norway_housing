@@ -1,4 +1,4 @@
-# norway_housing
+# Norway Housing
 
 ## Citations
 [1] abhiieor. “View Dataframe While Debugging in vs Code.” Stack Overflow, 13 Nov. 2023, stackoverflow.com/questions/60097076/view-dataframe-while-debugging-in-vs-code. Accessed 15 Mar. 2024.
