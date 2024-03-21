@@ -51,13 +51,14 @@ class DataFetcher:
                        "longitude"
                       ]
 
-    def fetch_data(self):
+    def compile_data(self):
         """
         Fetches and adds data to the data frame. This method pulls and parses the necessary data from the webpage and 
         adds it to the data frame.
         """
-        housing_data = self.pull_data()
-        self.add_single_webpage_data(housing_data=housing_data)
+        for page in range(self.number_of_pages):
+            housing_data = self.pull_data()
+            self.add_single_webpage_data(housing_data=housing_data)
 
     def determine_number_of_pages(self):
         """
@@ -106,10 +107,15 @@ class DataFetcher:
         
         return soup
 
-    def pull_data(self):
+    def pull_data(self, url):
         """
         Pulls JSON data from the parsed soup. This method locates and extracts JSON data embedded within the webpage and
         loads it into memory.
+        
+        parameters
+        ----------
+        url : str
+            The url that we will be pulling data from
         
         returns
         -------
@@ -117,7 +123,7 @@ class DataFetcher:
             The parsed JSON file containing the data on houses in the market.
         """
 
-        soup = self.cook_soup(url=self.main_webpage)
+        soup = self.cook_soup(url=url)
         pulled_json = soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
         json_content = pulled_json.text.strip()
         loaded_json = json.loads(json_content)
@@ -159,5 +165,5 @@ class DataFetcher:
 
 if __name__ == "__main__":
     data_fetcher = DataFetcher()
-    data_fetcher.fetch_data()
+    data_fetcher.compile_data_data()
     dataset = data_fetcher.df
