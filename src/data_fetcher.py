@@ -17,8 +17,6 @@ class DataFetcher:
         Data frame to store housing data.
     main_url : str
         The main URL of the website to fetch data from.
-    housing_data : list
-        List to store parsed housing data.
     num_results_per_page : int
         Lists the number of results that appear on each page. Default at 50.
     """
@@ -30,7 +28,6 @@ class DataFetcher:
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
         self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
-        self.housing_data = None
         self.num_results_per_page = 50
         self.number_of_pages = self.determine_number_of_pages()
 
@@ -59,8 +56,8 @@ class DataFetcher:
         Fetches and adds data to the data frame. This method pulls and parses the necessary data from the webpage and 
         adds it to the data frame.
         """
-        self.pull_data()
-        self.add_single_webpage_data()
+        housing_data = self.pull_data()
+        self.add_single_webpage_data(housing_data=housing_data)
 
     def determine_number_of_pages(self):
         """
@@ -113,20 +110,33 @@ class DataFetcher:
         """
         Pulls JSON data from the parsed soup. This method locates and extracts JSON data embedded within the webpage and
         loads it into memory.
+        
+        returns
+        -------
+        housing data : list
+            The parsed JSON file containing the data on houses in the market.
         """
 
         soup = self.cook_soup(url=self.main_webpage)
         pulled_json = soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
         json_content = pulled_json.text.strip()
         loaded_json = json.loads(json_content)
-        self.housing_data = loaded_json["props"]["pageProps"]["search"]["docs"]
+        housing_data = loaded_json["props"]["pageProps"]["search"]["docs"]
+        
+        return housing_data
 
-    def add_single_webpage_data(self):
+    def add_single_webpage_data(self, housing_data):
         """
         Adds single webpage data to the data frame. This method iterates through the parsed housing data and adds each 
         entry to the data frame.
+        
+        parameters
+        ----------
+        housing_data : list
+            Contains parsed housing data from the Finn.no webpage. While it's a list it contains information that
+            comes in JSON form.
         """
-        for house_data in self.housing_data:
+        for house_data in housing_data:
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
