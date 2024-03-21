@@ -4,6 +4,8 @@ import json
 import pandas as pd
 import re
 import math
+from tqdm import tqdm
+import time
 
 class DataFetcher:
     """
@@ -17,8 +19,8 @@ class DataFetcher:
         Data frame to store housing data.
     main_url : str
         The main URL of the website to fetch data from.
-    num_results_per_page : int
-        Lists the number of results that appear on each page. Default at 50.
+    max_number_of_pages : int
+        Finn.no will only show results for a max X number of pages for a single query. Default at 50.
     """
 
     def __init__(self):
@@ -28,8 +30,7 @@ class DataFetcher:
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
         self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
-        self.num_results_per_page = 50
-        self.number_of_pages = self.determine_number_of_pages()
+        self.max_number_of_pages = 50
 
     def set_header(self):
         """
@@ -54,39 +55,21 @@ class DataFetcher:
     def compile_data(self):
         """
         Fetches and adds data to the data frame. This method pulls and parses the necessary data from the webpage and 
-        adds it to the data frame.
+        adds it to the data frame. It will loop through all pages in the search Finn.no can provide.
         """
-        for page in range(self.number_of_pages):
-            housing_data = self.pull_data()
+        
+        # Initializing the progress bar
+        progress_bar = tqdm(total=self.max_number_of_pages, desc="Processing", unit="page")
+        
+        # Grabbing the data
+        for page_number in range(1, self.max_number_of_pages + 1):
+            url = self.main_webpage + f'&page={page_number}'
+            housing_data = self.pull_data(url=url)
             self.add_single_webpage_data(housing_data=housing_data)
-
-    def determine_number_of_pages(self):
-        """
-        When making a search for housing only X number of results display per page. Determining the total number of
-        pages to cycle through is important when collecting all the data.
-        
-        returns
-        -------
-        number_of_pages : int
-            The total number of pages to cycle through.
-        """
-        
-        # Grabbing the information on the webpage where it describes total number of house results
-        soup = self.cook_soup(url=self.main_webpage)
-        meta_tag = soup.find('meta', attrs={'name': 'description'})
-        description = meta_tag.get('content')
-        
-        # Extracting the total number of houses across all pages
-        pattern = f'\d+'
-        number_houses_str = re.findall(pattern, description)
-        if number_houses_str:
-            number_houses = int(number_houses_str[0])
-        else:
-            raise ValueError("No total number of houses found") 
-        
-        number_of_pages = math.ceil(number_houses / self.num_results_per_page)
-        
-        return number_of_pages
+            progress_bar.update(1)
+            
+        # Closing the progress bar
+        progress_bar.close()
     
     def cook_soup(self, url):
         """
@@ -165,5 +148,5 @@ class DataFetcher:
 
 if __name__ == "__main__":
     data_fetcher = DataFetcher()
-    data_fetcher.compile_data_data()
+    data_fetcher.compile_data()
     dataset = data_fetcher.df
