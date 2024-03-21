@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import pandas as pd
-import numpy as np
+from tqdm import tqdm
 
 class DataFetcher:
     """
@@ -14,32 +14,20 @@ class DataFetcher:
         The header used for the dataset
     df : pandas.DataFrame
         Data frame to store housing data.
-    url : str
-        URL of the website to fetch data from.
-    response : requests.models.Response
-        The response from the URL
-    soup : bs4.BeautifulSoup
-        A soup object used to grab specific website data
-    housing_data : list
-        List to store parsed housing data.
+    main_url : str
+        The main URL of the website to fetch data from.
+    max_number_of_pages : int
+        Finn.no will only show results for a max X number of pages for a single query. Default at 50.
     """
 
     def __init__(self):
         """
         Initializes the DataFetcher object and sets up initial data.
         """
-        self.initialize_attributes()
-
-    def initialize_attributes(self):
-        """
-        Initializes the attributes.
-        """
         self.set_header()
         self.df = pd.DataFrame(columns=self.header)
-        self.url = "https://www.finn.no/realestate/homes/search.html"
-        self.get_response()
-        self.parse_soup()
-        self.housing_data = None
+        self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
+        self.max_number_of_pages = 50
 
     def set_header(self):
         """
@@ -61,43 +49,80 @@ class DataFetcher:
                        "longitude"
                       ]
 
-    def fetch_data(self):
+    def compile_data(self):
         """
         Fetches and adds data to the data frame. This method pulls and parses the necessary data from the webpage and 
-        adds it to the data frame.
+        adds it to the data frame. It will loop through all pages in the search Finn.no can provide.
         """
-        self.pull_data()
-        self.add_single_webpage_data()
+        
+        # Initializing the progress bar
+        progress_bar = tqdm(total=self.max_number_of_pages, desc="Processing", unit="page")
+        
+        # Grabbing the data
+        for page_number in range(1, self.max_number_of_pages + 1):
+            url = self.main_webpage + f'&page={page_number}'
+            housing_data = self.pull_data(url=url)
+            self.add_single_webpage_data(housing_data=housing_data)
+            progress_bar.update(1)
+            
+        # Closing the progress bar
+        progress_bar.close()
+    
+    def cook_soup(self, url):
+        """
+        Prepares a BeautifulSoup object that will be used for parsing data.
+        
+        Arguments
+        ---------
+        url : str
+            The url we are going to create a soup object with.
+            
+        Returns
+        -------
+        bs4.BeautifulSoup
+            A BeautifulSoup object used to pull information from a webpage
+        """
+        response = requests.get(url=url)
+        soup = BeautifulSoup(response.text, "html.parser")
+        
+        return soup
 
-    def get_response(self):
-        """
-        Fetches response from the URL. This method sends a GET request to the specified URL and retrieves the response.
-        """
-        self.response = requests.get(self.url)
-
-    def parse_soup(self):
-        """
-        Parses the response text using BeautifulSoup. This method extracts structured data from the HTML content 
-        retrieved from the webpage.
-        """
-        self.soup = BeautifulSoup(self.response.text, "html.parser")
-
-    def pull_data(self):
+    def pull_data(self, url):
         """
         Pulls JSON data from the parsed soup. This method locates and extracts JSON data embedded within the webpage and
         loads it into memory.
+        
+        parameters
+        ----------
+        url : str
+            The url that we will be pulling data from
+        
+        returns
+        -------
+        housing data : list
+            The parsed JSON file containing the data on houses in the market.
         """
-        pulled_json = self.soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
+
+        soup = self.cook_soup(url=url)
+        pulled_json = soup.find("script", {"type": "application/json", "id": "__NEXT_DATA__"})
         json_content = pulled_json.text.strip()
         loaded_json = json.loads(json_content)
-        self.housing_data = loaded_json["props"]["pageProps"]["search"]["docs"]
+        housing_data = loaded_json["props"]["pageProps"]["search"]["docs"]
+        
+        return housing_data
 
-    def add_single_webpage_data(self):
+    def add_single_webpage_data(self, housing_data):
         """
         Adds single webpage data to the data frame. This method iterates through the parsed housing data and adds each 
         entry to the data frame.
+        
+        parameters
+        ----------
+        housing_data : list
+            Contains parsed housing data from the Finn.no webpage. While it's a list it contains information that
+            comes in JSON form.
         """
-        for house_data in self.housing_data:
+        for house_data in housing_data:
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
@@ -120,5 +145,5 @@ class DataFetcher:
 
 if __name__ == "__main__":
     data_fetcher = DataFetcher()
-    data_fetcher.fetch_data()
+    data_fetcher.compile_data()
     dataset = data_fetcher.df

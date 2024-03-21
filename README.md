@@ -1,6 +1,6 @@
 # Norway Housing
 
-## Citations
+## References
 [1] abhiieor. “View Dataframe While Debugging in vs Code.” Stack Overflow, 13 Nov. 2023, stackoverflow.com/questions/60097076/view-dataframe-while-debugging-in-vs-code. Accessed 15 Mar. 2024.
 
 [2] Mortensen, Peter. “Error ““DataFrame” Object Has No Attribute “Append.””” Stack Overflow, 18 Dec. 2023, stackoverflow.com/questions/75956209/error-dataframe-object-has-no-attribute-append. Accessed 15 Mar. 2024.
