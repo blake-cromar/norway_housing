@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import pandas as pd
-import numpy as np
+import re
+import math
 
 class DataFetcher:
     """
@@ -18,6 +19,8 @@ class DataFetcher:
         The main URL of the website to fetch data from.
     housing_data : list
         List to store parsed housing data.
+    num_results_per_page : int
+        Lists the number of results that appear on each page. Default at 50.
     """
 
     def __init__(self):
@@ -28,6 +31,8 @@ class DataFetcher:
         self.df = pd.DataFrame(columns=self.header)
         self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
         self.housing_data = None
+        self.num_results_per_page = 50
+        self.number_of_pages = self.determine_number_of_pages()
 
     def set_header(self):
         """
@@ -58,7 +63,32 @@ class DataFetcher:
         self.add_single_webpage_data()
 
     def determine_number_of_pages(self):
-        pass
+        """
+        When making a search for housing only X number of results display per page. Determining the total number of
+        pages to cycle through is important when collecting all the data.
+        
+        returns
+        -------
+        number_of_pages : int
+            The total number of pages to cycle through.
+        """
+        
+        # Grabbing the information on the webpage where it describes total number of house results
+        soup = self.cook_soup(url=self.main_webpage)
+        meta_tag = soup.find('meta', attrs={'name': 'description'})
+        description = meta_tag.get('content')
+        
+        # Extracting the total number of houses across all pages
+        pattern = f'\d+'
+        number_houses_str = re.findall(pattern, description)
+        if number_houses_str:
+            number_houses = int(number_houses_str[0])
+        else:
+            raise ValueError("No total number of houses found") 
+        
+        number_of_pages = math.ceil(number_houses / self.num_results_per_page)
+        
+        return number_of_pages
     
     def cook_soup(self, url):
         """
