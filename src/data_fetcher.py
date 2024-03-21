@@ -2,10 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import json
 import pandas as pd
-import re
-import math
 from tqdm import tqdm
-import time
 
 class DataFetcher:
     """
