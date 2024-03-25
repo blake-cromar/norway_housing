@@ -2,10 +2,10 @@ class DataManager():
     """
     Manipulates data involving the Norway Housing project.
     """
-    def __init__():
+    def __init__(self):
         pass
     
-    def location_string_splitter(location_string):
+    def location_string_splitter(self, location_string):
         """
         Takes the location information and splits it into a a street and city string. This will help make the 
         utilization of this string much easier.
