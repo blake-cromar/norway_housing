@@ -3,6 +3,7 @@ import requests
 import json
 import pandas as pd
 from tqdm import tqdm
+from data_manager import DataManager
 
 class DataFetcher:
     """
@@ -18,8 +19,9 @@ class DataFetcher:
         The main URL of the website to fetch data from.
     max_number_of_pages : int
         Finn.no will only show results for a max X number of pages for a single query. Default at 50.
+    data_manager : DataManager
+        This objects assists by providing tools that help manipulate the data set.
     """
-
     def __init__(self):
         """
         Initializes the DataFetcher object and sets up initial data.
@@ -28,13 +30,16 @@ class DataFetcher:
         self.df = pd.DataFrame(columns=self.header)
         self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
         self.max_number_of_pages = 50
+        self.data_manager = DataManager()
+        
 
     def set_header(self):
         """
         Sets header for the data frame. The header consists of various attributes describing the housing data.
         """
         self.header = ["id", 
-                       "location", 
+                       "road",
+                       "city", 
                        "timestamp", 
                        "price_suggestion", 
                        "price_total", 
@@ -123,11 +128,17 @@ class DataFetcher:
             comes in JSON form.
         """
         for house_data in housing_data:
+            
+            # Modifying location data to pull out road and city data
+            location_data = house_data.get("location", "N/A") 
+            road, city = self.data_manager.location_string_splitter(location_data)
+            
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
                     "id": house_data.get("id", "N/A"),
-                    "location": house_data.get("location", "N/A"),
+                    "road": road,
+                    "city": city,
                     "timestamp": house_data.get("timestamp", "N/A"),
                     "price_suggestion": house_data.get("price_suggestion", {}).get("amount", "N/A"),
                     "price_total": house_data.get("price_total", {}).get("amount", "N/A"),
