@@ -106,7 +106,6 @@ class DataFetcher:
             comes in JSON form.
         """
         for house_data in housing_data:
-            
             # Modifying location data to pull out road and city data
             location_data = house_data.get("location", "N/A") 
             road, city = self.data_manager.location_string_splitter(location_data)
@@ -115,6 +114,7 @@ class DataFetcher:
             milliseconds = house_data.get("timestamp", "N/A")
             day, month, year = self.data_manager.milliseconds_to_dates(timestamp_milli=milliseconds)
             
+            # Compiling the data together
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
@@ -126,6 +126,10 @@ class DataFetcher:
                     "year": year,
                     "price_suggestion": house_data.get("price_suggestion", {}).get("amount", "N/A"),
                     "price_total": house_data.get("price_total", {}).get("amount", "N/A"),
+                    "price_range_suggestion_from": house_data.get("price_range_suggestion", {}).get("amount_from", "N/A"),
+                    "price_range_suggestion_to": house_data.get("price_range_suggestion", {}).get("amount_to", "N/A"),
+                    "price_range_total_from": house_data.get("price_range_total", {}).get("amount_from", "N/A"),
+                    "price_range_total_to": house_data.get("price_range_total", {}).get("amount_to", "N/A"),
                     "house_size_sq_meters": house_data.get("area_range", {}).get("size_from", "N/A"),
                     "plot_size_sq_meters": house_data.get("area_plot", {}).get("size", "N/A"),
                     "organization_name": house_data.get("organisation_name", "N/A"),
@@ -142,4 +146,3 @@ if __name__ == "__main__":
     data_fetcher = DataFetcher()
     data_fetcher.compile_data()
     dataset = data_fetcher.df
-    pass
