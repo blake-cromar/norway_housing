@@ -26,36 +26,12 @@ class DataFetcher:
         """
         Initializes the DataFetcher object and sets up initial data.
         """
-        self.set_header()
-        self.df = pd.DataFrame(columns=self.header)
+
+        self.df = pd.DataFrame()
         self.main_webpage= "https://www.finn.no/realestate/homes/search.html?sort=RELEVANCE"
         self.max_number_of_pages = 50
         self.data_manager = DataManager()
         
-
-    def set_header(self):
-        """
-        Sets header for the data frame. The header consists of various attributes describing the housing data.
-        """
-        self.header = ["id", 
-                       "road",
-                       "city", 
-                       "day",
-                       "month",
-                       "year", 
-                       "price_suggestion", 
-                       "price_total", 
-                       "house_size_sq_meters", 
-                       "plot_size_sq_meters", 
-                       "organization_name", 
-                       "local_area_name", 
-                       "number_of_bedrooms", 
-                       "owner_type_description", 
-                       "property_type_description", 
-                       "latitude", 
-                       "longitude"
-                      ]
-
     def compile_data(self):
         """
         Fetches and adds data to the data frame. This method pulls and parses the necessary data from the webpage and 
