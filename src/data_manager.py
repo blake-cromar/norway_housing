@@ -1,3 +1,6 @@
+import datetime
+import pytz
+
 class DataManager():
     """
     Manipulates data involving the Norway Housing project.
@@ -34,3 +37,34 @@ class DataManager():
         city = "N/A" if "|" in city else city
         
         return road, city
+    
+    def milliseconds_to_dates(self, timestamp_milli):
+        """
+        Takes dates that are representing as the number of milliseconds from January 1st, 1970.
+        
+        parameters
+        ----------
+        timestamp_milli : int
+            The number of milliseconds from January 1st, 1970
+            
+        returns
+        -------
+        tuple
+            A tuple of dates in the form (day, month, year).
+        """
+        
+        # Converting the milliseconds to seconds
+        timestamp_seconds = timestamp_milli / 1000
+        
+        # Transforming the second timestamp into readable dates
+        norway_tz = pytz.timezone('Europe/Oslo')
+        dt_object = datetime.datetime.fromtimestamp(timestamp_seconds, tz=norway_tz)
+        
+        # Extracting day, month, and year
+        day = dt_object.day
+        month = dt_object.strftime('%B')
+        year = dt_object.year
+        
+        return day, month, year
+        
+        

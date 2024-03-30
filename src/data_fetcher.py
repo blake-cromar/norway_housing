@@ -40,7 +40,9 @@ class DataFetcher:
         self.header = ["id", 
                        "road",
                        "city", 
-                       "timestamp", 
+                       "day",
+                       "month",
+                       "year", 
                        "price_suggestion", 
                        "price_total", 
                        "house_size_sq_meters", 
@@ -133,13 +135,19 @@ class DataFetcher:
             location_data = house_data.get("location", "N/A") 
             road, city = self.data_manager.location_string_splitter(location_data)
             
+            # Converting millisecond date data to day, month, year
+            milliseconds = house_data.get("timestamp", "N/A")
+            day, month, year = self.data_manager.milliseconds_to_dates(timestamp_milli=milliseconds)
+            
             self.df = pd.concat([
                 self.df,
                 pd.DataFrame([{
                     "id": house_data.get("id", "N/A"),
                     "road": road,
                     "city": city,
-                    "timestamp": house_data.get("timestamp", "N/A"),
+                    "day": day,
+                    "month": month,
+                    "year": year,
                     "price_suggestion": house_data.get("price_suggestion", {}).get("amount", "N/A"),
                     "price_total": house_data.get("price_total", {}).get("amount", "N/A"),
                     "house_size_sq_meters": house_data.get("area_range", {}).get("size_from", "N/A"),
@@ -158,3 +166,4 @@ if __name__ == "__main__":
     data_fetcher = DataFetcher()
     data_fetcher.compile_data()
     dataset = data_fetcher.df
+    pass
