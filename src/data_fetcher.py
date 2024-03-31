@@ -6,6 +6,8 @@ from tqdm import tqdm
 from data_manager import DataManager
 import statistics
 
+pd.set_option("future.no_silent_downcasting", True)
+
 class DataFetcher:
     """
     A class to fetch and parse housing data from Finn.no.
