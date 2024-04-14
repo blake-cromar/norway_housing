@@ -20,13 +20,13 @@ with predictions regarding the future.
 Steps:<br>
 [1] Ensure that Python is installed on your machine. <br>
 [2] Open your terminal.<br>
-[3] Run ´cd path/to/the/norway_housing/project/on/your/local/machine´<br>
-[4] Run ´python3 -m venv housing_env´<br>
-[5] Run ´housing_env/Scripts/activate´ (Windows) or ´source housing_env/bin/activate´(MacOS & Linux)<br>
-[6] Run ´pip install -r requirements.txt´<br>
+[3] Run `cd path/to/the/norway_housing/project/on/your/local/machine`<br>
+[4] Run `python3 -m venv housing_env`<br>
+[5] Run `housing_env/Scripts/activate` (Windows) or `source housing_env/bin/activate`(MacOS & Linux)<br>
+[6] Run `pip install -r requirements.txt`<br>
 
 ## How to Use
-[1] Run 'python3 src/data_fetcher.py'
+[1] Run `python3 src/data_fetcher.py`
 
 - You will see it run 50 steps via a loading bar. Each step is the extraction of 
 a webpage's worth of data. Afterwards, it will print the data that has been cleaned.
