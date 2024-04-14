@@ -1,23 +1,74 @@
 # Norway Housing
 
-## References
-[1] abhiieor. “View Dataframe While Debugging in vs Code.” Stack Overflow, 13 Nov. 2023, stackoverflow.com/questions/60097076/view-dataframe-while-debugging-in-vs-code. Accessed 15 Mar. 2024.
+## Description
+This project is designed to help make informed decisions on how to buy a house in Norway. The
+data was collected from www.finn.no. The goal will be to take the data that is pulled from this
+webpage and create an interactive dashboard that performs an analysis on the Norwegian housing market along
+with predictions regarding the future.  
 
-[2] das-g. “Git Pull Request with --No-Ff Flag.” Stack Overflow, 15 Feb. 2015, stackoverflow.com/questions/35418135/git-pull-request-with-no-ff-flag. Accessed 20 Mar. 2024.
+## Table of Contents
+- [Installation](#installation)
+- [How&nbsp;to&nbsp;Use](#how_to_use)
+- [Features](#features)
+- [Planned&nbsp;Features](#planned-features)
+- [Contributing](#contributing)
+- [Contact](#contact)
+- [Features](#license)
 
-[3] Mortensen, Peter. “Error ““DataFrame” Object Has No Attribute “Append.””” Stack Overflow, 18 Dec. 2023, stackoverflow.com/questions/75956209/error-dataframe-object-has-no-attribute-append. Accessed 15 Mar. 2024.
+## Installation
+(There will be more on this as a version 1.0 release is approached)<br>
+Steps:<br>
+[1] Ensure that Python is installed on your machine. <br>
+[2] Open your terminal.<br>
+[3] Run ´cd path/to/the/norway_housing/project/on/your/local/machine´<br>
+[4] Run ´python3 -m venv housing_env´<br>
+[5] Run ´housing_env/Scripts/activate´ (Windows) or ´source housing_env/bin/activate´(MacOS & Linux)<br>
+[6] Run ´pip install -r requirements.txt´<br>
 
-[4] NumFOCUS, Inc. “Pandas.set_option — Pandas 2.2.1 Documentation.” Pandas.pydata.org, NumFOCUS, Inc, 31 Mar. 2024, pandas.pydata.org/pandas-docs/stable/reference/api/pandas.set_option.html. Accessed 31 Mar. 2024.
+## How to Use
+[1] Run 'python3 src/data_fetcher.py'
 
-[5] OpenAI. GPT-3.5. 2020. Computer software. Web. [Accessed March 2024 Onwards]. 
+- You will see it run 50 steps via a loading bar. Each step is the extraction of 
+a webpage's worth of data. Afterwards, it will print the data that has been cleaned.
 
-[6] Soma, Jonathan . “Solution to Process Completed with Exit Code 128 on GitHub Actions - Everything I Know.” Jonathansoma.com, 15 Jan. 2023, jonathansoma.com/everything/git/github-actions-403-error/. Accessed 19 Mar. 2024.
+## Features
+- The ability to grab the first 50 pages of house data based on a generic "relevant" search from finn.no
+- The ability to clean data collected.  
 
-## Copyright Notice
+## Planned Features
+- A way of storing the data on the cloud.
+- A way of downloading the data
+- A data dashboard
+- Unit tests
+- In depth documentation
 
-Copyright © 2024 Blake Cromar. All rights reserved. 
+## Contributing
+Blake Cromar, Artificial Intelligence Engineer
 
-This code is the property of Blake Cromar and may not be used, copied, modified, or distributed without the express written consent of Blake Cromar.
+## Contact
+- Blake Cromar, [blake.cromar@icloud.com] or [+47 458 11 997] or [https://www.linkedin.com/in/blake-cromar/]
 
-Unauthorized reproduction or distribution of this code, or any portion of it, may result in severe civil and criminal penalties, and will be prosecuted to the maximum extent possible under the law.
+## License
+MIT License
+
+Copyright (c) 2024 [Blake Cromar]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
