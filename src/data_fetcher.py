@@ -179,3 +179,4 @@ if __name__ == "__main__":
     data_fetcher = DataFetcher()
     data_fetcher.compile_data()
     dataset = data_fetcher.df
+    print(dataset)
